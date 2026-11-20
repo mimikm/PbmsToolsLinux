@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=PbmsTools
+GenericName=Pace BMS monitor
+Comment=Monitor and configure Pace BMS batteries over RS485/RS232
+Exec=pbmstool-gui
+Icon=battery
+Terminal=false
+Categories=Utility;Electronics;
+Keywords=battery;bms;pace;rs485;lifepo4;

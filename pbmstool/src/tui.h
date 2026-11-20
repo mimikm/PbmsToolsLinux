@@ -1,48 +1,12 @@
 #pragma once
 #include "bms.h"
+#include "params.h"
 #include <ncurses.h>
 #include <chrono>
 #include <string>
 #include <vector>
 
 namespace pace {
-
-// Aggregate of every param struct — held as current (editable) + original (for revert).
-struct AllParams {
-    CellVoltProtParams cell_ovp;
-    CellVoltProtParams pack_ovp;
-    CurrProtParams     chg_ocp;
-    CurrProtParams     dchg_ocp;
-    ShortCircuitParams scp;
-    CellTempProtParams chg_otp;
-    MosfetOtpParams    mosfet_otp;
-    UnderTempParams    utp;
-    BalanceParams      balance;
-    PackParamsBParams  pack_b;
-    EqualizationParams equalization;
-    TempProtGroup      chg_temp;
-    TempProtGroup      dchg_temp;
-    TempProtGroup      mos_chg_temp;
-    TempProtGroup      mos_dchg_temp;
-};
-
-// Dirty flags — one per write-able group.
-struct DirtyFlags {
-    bool cell_ovp=false, pack_ovp=false;
-    bool chg_ocp=false, dchg_ocp=false;
-    bool scp=false, chg_otp=false;
-    bool mosfet_otp=false, utp=false;
-    bool balance=false, pack_b=false;
-    bool equalization=false;
-    bool chg_temp=false, dchg_temp=false;
-    bool mos_chg_temp=false, mos_dchg_temp=false;
-    bool any() const {
-        return cell_ovp||pack_ovp||chg_ocp||dchg_ocp||scp||chg_otp||
-               mosfet_otp||utp||balance||pack_b||equalization||
-               chg_temp||dchg_temp||mos_chg_temp||mos_dchg_temp;
-    }
-    void clear() { *this = DirtyFlags{}; }
-};
 
 // A single editable row in the params tab.
 struct ParamRow {

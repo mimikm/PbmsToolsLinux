@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Qt 5
+            qt: qtbase5-dev
+          - name: Qt 6
+            qt: qt6-base-dev
+    name: Ubuntu 24.04 (${{ matrix.name }})
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libncurses-dev ${{ matrix.qt }} libgl-dev
+
+      - name: Configure
+        run: cmake -B pbmstool/build pbmstool -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build pbmstool/build -j
+
+      - name: Check binaries
+        run: |
+          test -x pbmstool/build/pbmstool
+          test -x pbmstool/build/pbmstool-gui
+
+      - name: Upload binaries
+        if: matrix.name == 'Qt 5'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pbmstool-ubuntu-24.04
+          path: |
+            pbmstool/build/pbmstool
+            pbmstool/build/pbmstool-gui

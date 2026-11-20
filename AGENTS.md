@@ -12,7 +12,13 @@ PbmsTools/
 │   ├── bms.h / bms.cpp    ← BMS communication layer
 │   ├── protocol.h/.cpp    ← Pace ASCII frame encode/decode
 │   ├── serial.h/.cpp      ← Linux termios serial port
+│   ├── params.h/.cpp      ← AllParams/DirtyFlags + read/write-all helpers (shared by TUI & GUI)
+│   ├── tui.h/.cpp         ← ncurses TUI (`tui` subcommand)
 │   └── main.cpp           ← CLI entry point
+├── pbmstool/gui/          ← Qt Widgets GUI (`pbmstool-gui`, optional, built when Qt is found)
+│   ├── worker.h/.cpp      ← owns Serial+BMS, runs all requests on a background QThread
+│   ├── mainwindow.h/.cpp  ← Live / Alarms / Parameters tabs
+│   └── cellbars.h/.cpp    ← custom-painted per-cell voltage bars
 └── pbmstoolsgui/          ← C# Windows GUI (read-only reference)
     └── PbmsTools/
         └── FrmMain.cs     ← ~9700-line main form; contains all protocol logic
@@ -174,6 +180,10 @@ CCCC          frame checksum (16-bit two's complement of all payload bytes)
 ---
 
 ## Adding a New Parameter Group
+
+(If the group should be editable in the TUI/GUI, also add it to `AllParams`, `ParamGroup`,
+`DirtyFlags`, `read_all_params`/`write_dirty_params` in `params.h/.cpp`, `TUI::build_param_rows`,
+and `MainWindow::buildParamGroups`.)
 
 1. Add a struct in `bms.h` (or reuse an existing one).
 2. Add read/write command constants in `bms.cpp`.
